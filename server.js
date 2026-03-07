@@ -1,4 +1,5 @@
 const http = require('http');
+const fs = require("fs");
 const { json } = require('stream/consumers');
 let notes = [];
 const server = http.createServer((req,res)=>{
@@ -7,6 +8,8 @@ const server = http.createServer((req,res)=>{
         res.end();
     }
     else if(req.url === '/notes' && req.method ==='GET'){
+        const data =  fs.readFileSync("notes.json");
+        const notes  = JSON.parse(data);
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end(JSON.stringify(notes));
     }
@@ -17,7 +20,10 @@ const server = http.createServer((req,res)=>{
         });
         req.on("end", () =>{
             const newnote = JSON.parse(body);
+            const data = fs.readFileSync("notes.json");
+            const notes =  JSON.parse(data);
             notes.push(newnote);
+            fs.writeFileSync("notes.json",JSON.stringify(notes));
             res.writeHead(201,{"content-type":"application/json"});
             res.end(JSON.stringify(newnote));
 
