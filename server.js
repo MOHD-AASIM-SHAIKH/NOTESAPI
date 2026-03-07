@@ -43,6 +43,41 @@ const server = http.createServer((req,res)=>{
 
         });
     }
+    else if(req.url.startsWith('/notes/') && req.method ==='DELETE'){
+        const parts =  req.url.split('/');
+        const id =  parts[2];
+        const data  = fs.readFileSync('notes.json');
+        const notes = JSON.parse(data);
+        const Filterednote = notes.filter(n => n.id!=id);
+        fs.writeFileSync("notes.json",JSON.stringify(Filterednote));
+        res.writeHead(200);
+        res.end("Note deleted");
+    }
+    else if (req.url.startsWith('/notes/')&& req.method === 'PUT'){
+        const parts = req.url.split('/');
+        const id = parts[2];
+
+        let body  =  "";
+        req.on("data",chunk => {
+            body +=chunk;
+        });
+        req.on("end",()=>{
+            const updateddata =  JSON.parse((body));
+            const data = fs.readFileSync("notes.json");
+            let notes = JSON.parse(data);
+            
+            const index = notes.findIndex(n =>n.id == id);
+            if(index == -1){
+                res.writeHead(404);
+                return res.end("not found index ");
+            }
+            notes[index] = {...notes[index],...updateddata};
+            fs.writeFileSync("notes.json",JSON.stringify(notes));
+            res.writeHead(200, {"Content-Type":"application/json"});
+            res.end(JSON.stringify(notes[index]));
+
+        })
+    }
     else{
         res.write('no route find');
         res.end();
