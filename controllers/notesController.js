@@ -1,9 +1,8 @@
-const service =  require('services\notesService.js');
-const { updatenotes } = require('../services/notesService');
+const service =  require('../services/notesService');
 
 function getnotes(req,res){
-    const notes = service.getallnotes();
-    res.writehead(200,{"content-type":"application.json"})
+    const notes = service.getAllNote();
+    res.writeHead(200,{"Content-Type":"application/json"});
     res.end(JSON.stringify(notes));
 }
 
@@ -14,18 +13,16 @@ function createnotes(req,res){
     });
     req.on("end",()=>{
         const note = JSON.parse(body);
-        const create = service.createnotes();
+        const create = service.createnotes(note);
 
-        res.writehead(200,{"content-type":"application.json"})
+        res.writeHead(200,{"content-type":"application.json"});
         res.end(JSON.stringify(create));
 
     });
-
 } 
-
-function deletenote(res,res,id){
+function deletenote(req,res,id){
     service.deletenote(id);
-    res.writehead(200,{"content-type":"application.json"})
+    res.writeHead(200,{"content-type":"application.json"});
     res.end("deleted");
 }
 
@@ -35,7 +32,7 @@ function getnote(req,res,id){
         res.writehead(404);
         return res.end("not found")
     }
-    res.writehead(200,{"content-type":"application.json"})
+    res.writeHead(200,{"content-type":"application.json"});
     res.end(JSON.stringify(note));
 }
 function updatenote(req,res,id){

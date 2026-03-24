@@ -7,7 +7,7 @@ function notesroutes(req,res){
     if(req.url ==='/notes' && req.method === 'POST'){
         return controller.createnotes(req,res);
     }
-    if(req.url.startwith('/notes')){
+    if(req.url.startsWith('/notes')){
         const id = req.url.split('/')[2];
 
         if(req.method === 'GET'){
